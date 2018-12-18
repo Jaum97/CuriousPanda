@@ -1,0 +1,247 @@
+<apex:page language="{!$CurrentPage.parameters.lang}"  title="Teste" standardController="Processo__c"
+           extensions="PlanilhaDeTempoController" standardStylesheets="false" applyHtmlTag="false"
+           showHeader="false" applyBodyTag="false" cache="false" id="idPage">
+	<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="width: 100%; height: 100%;" >
+		<head>
+			<apex:slds />
+			<style>
+				body {
+					background-color: #FFF;
+					margin: 0; 
+                }
+                
+                .wrapper {
+                	text-align: center;
+                }
+                
+                .wrapper ul {
+					display: inline-block;
+					margin: 0;
+					padding: 0;
+					/* For IE, the outcast */
+					zoom:1;
+					*display: inline;
+					min-width: 80%;
+                }
+                
+                .wrapper li {
+					width: 50%;
+					min-width: 300px;
+					float: left;
+                }
+                
+                .slds-media__body h1 {
+                	text-align: left;
+                }
+                
+                .slds-form-element {
+					min-width: 85%;
+					padding-top: 10px;
+					display: block;
+                }
+                
+                .slds-form {
+                	padding: 10px 25px 10px 25px;
+                }
+                
+                .slds-scope .slds-form--inline .slds-form-element__label {
+                	display: block;
+                }
+                
+                .slds-scope .slds-form-element__label {
+					display: block;
+					margin-bottom: 0px;
+					float: left;
+                }
+                
+                .slds-form-element__control {
+                	min-width: 100%;
+                }
+                
+                .slds-form-element__control button {
+                	min-width: 100%;
+                }
+                
+                .slds-table td {
+                	height: 50px;
+                }
+                
+                .slds-table-container {
+                
+                }
+                
+                .st-select {
+					border: solid 1px #CCC;
+					border-radius: .25rem;
+                }
+                
+                .st-aviso {
+					text-align: center;
+					color: #fff;
+                }
+                
+                .st-aviso span {
+                	background-color: #ff0000;
+                }
+
+				.st-ok {
+                	background-color: #E0F2F7;
+                }
+                
+                @media only screen and (max-width: 500px) {
+					.wrapper li {
+						width: 100%;
+					}
+                }
+			</style>
+		
+          
+			<apex:includeScript value="{!$Resource.Jquery}" /> 
+			<apex:includeScript value="{!$Resource.jQueryMask}" />
+		<!--
+			<apex:includeScript value="{!$Resource.jQueryCurrency}" />
+			<apex:includeScript value="/soap/ajax/33.0/connection.js" />
+			<apex:includeScript value="/soap/ajax/33.0/apex.js" /> 
+		-->
+		</head> 
+
+		<body class="slds-notify_container">
+			<div class="slds-scope">
+
+				<apex:form id="formHead" styleClass="slds-form">
+					<apex:pageBlock id="pbChamado" rendered="true" >
+						<apex:OutputPanel id="opChamado">
+							<apex:selectList id="selectedChamado" size="1" multiselect="false" value="{!selectedChamadoId}"  >
+								<apex:selectOptions value="{!Chamado}" id="optionsChamado" />
+								<apex:actionSupport event="onchange" rerender="formDetails" action="{!Add}"/>
+							</apex:selectList>
+						</apex:OutputPanel>  
+					</apex:pageBlock>
+				</apex:form>
+
+				<apex:form id="formDetails" styleClass="slds-form" >
+					<apex:pageBlock id="pb1">
+						
+						<apex:pageBlockButtons location="bottom">
+							<apex:commandButton value="GRAVAR" action="{!Save}"/>
+						</apex:pageBlockButtons>
+ 
+						<apex:pageBlock id="pb2">
+
+							<apex:pageBlockTable value="{!lstInner}" var="e1" id="therepeat" styleClass="slds-table slds-table_cell-buffer slds-table_bordered ">
+
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}" id="colChamado">
+									<apex:facet name="header">Chamado</apex:facet>
+									<apex:inputField value="{!e1.processo.chamado__c}"/> 
+								</apex:column>
+ 
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}">
+									<apex:facet name="header">Data</apex:facet>
+									<apex:inputField value="{!e1.processo.Data__c}"/>
+								</apex:column>
+
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}">
+									<apex:facet name="header">Tempo</apex:facet>
+									<apex:inputField value="{!e1.processo.Tempo__c}"/>
+								</apex:column>
+ 
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}">
+									<apex:facet name="header">Descrição</apex:facet>
+									<apex:inputField value="{!e1.processo.Descricao__c}"/>
+								</apex:column>
+
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}">
+									<apex:facet name="header">Excluir</apex:facet>
+									<apex:commandButton value="x" action="{!Del}" rerender="pb2" immediate="true"> 
+										<apex:param name="rowToBeDeleted" value="{!e1.recCount}" assignTo="{!selectedRowIndex}" ></apex:param>
+									</apex:commandButton>
+								</apex:column>
+
+								<apex:column styleClass="{!IF(e1.Sucesso,'st-ok','')}">
+									<apex:facet name="header">Novo</apex:facet>
+									<apex:commandButton value="+" action="{!Add}" rerender="pb2"/> 
+								</apex:column>
+
+							</apex:pageBlockTable>
+						</apex:pageBlock>
+					</apex:pageBlock> 
+				</apex:form>
+
+<!--				
+				<apex:form id="form">
+
+					<apex:pageBlock id="pb1">
+						<apex:pageBlockSection id="pds1">
+							<apex:inputField value="{!Processo__c.Chamado__c}"/>
+							<apex:inputField value="{!Processo__c.Data__c}"/>
+							<apex:inputField value="{!Processo__c.Tempo__c}"/>
+							<apex:inputField value="{!Processo__c.Descricao__c}"/>
+						</apex:pageBlockSection>
+					
+						<apex:pageBlockButtons>
+							<apex:commandButton value="Novo" action="{!NovaLinha}"/>
+						</apex:pageBlockButtons>
+					</apex:pageBlock>
+
+					<apex:outputPanel id="panel">
+						<apex:pageBlock id="pb2" rendered="true">
+							<apex:pageBlockTable value="{!ProcessoList}" var="processo">
+								<apex:column headerValue="Chamado" value="{!processo.Chamado__c}"/>
+								<apex:column headerValue="Data" value="{!processo.Data__c}"/>
+								<apex:column headerValue="Tempo" value="{!processo.Tempo__c}"/>
+								<apex:column headerValue="Descrição" value="{!processo.Descricao__c}"/>
+							</apex:pageBlockTable>
+						</apex:pageBlock>
+					</apex:outputPanel>
+
+				</apex:form> 
+
+				<apex:form id="formHead" styleClass="slds-form">
+					<apex:pageBlock id="pbChamado" title="Seleção Carteiras" rendered="true" >
+						<apex:OutputPanel id="opChamado">
+							<apex:selectList id="selectedChamado" size="1" multiselect="false" value="{!selectedChamadoId}"  >
+								<apex:selectOptions value="{!Chamado}" id="optionsChamado"/>
+								<apex:actionSupport event="onchange" rerender="formDetails"/>
+							</apex:selectList>
+						</apex:OutputPanel>  
+					</apex:pageBlock>
+				</apex:form>
+				<apex:form id="formDetails" styleClass="slds-form">
+					<div class="slds-form-element">
+						<table id="tableProcessos" class="slds-table slds-table_cell-buffer slds-table_bordered">
+							<tr class="slds-line-height_reset">
+								<th class="slds-text-title_caps" style="width: 320px" scope="col">Chamado</th>
+								<th class="slds-text-title_caps" scope="col">Data</th>
+								<th class="slds-text-title_caps" scope="col">Início</th>
+								<th class="slds-text-title_caps" scope="col">Fim</th>
+								<th class="slds-text-title_caps" scope="col">Descrição</th>
+								<th class="slds-text-title_caps" scope="col">Tempo</th>
+							</tr> 
+							<apex:repeat id="repeatProcessos" var="processo" value="{!Processos}" > 
+								<tr class="slds-hint-parent">
+									<td>{!processo.chamado__c}</td>
+									<td class="st-date">{!processo.Data__c}</td>
+									<td class="st-time">{!processo.Inicio__c}</td>
+									<td class="st-time">{!processo.Fim__c}</td>
+									<td>{!processo.Descricao__c}</td>
+									<td>{!processo.Tempo__c}</td>
+								</tr> 
+							</apex:repeat>
+						</table>
+					</div>
+				</apex:form> 
+-->
+			</div> 
+					
+			<script>
+				$(document).ready(function () {
+                	BindMasks();
+				});
+				function BindMasks() {
+					$(".st-date").mask('00/00/000');
+					$(".st-time").mask('00:00');
+				};
+			</script>
+		</body> 
+    </html>
+</apex:page>
