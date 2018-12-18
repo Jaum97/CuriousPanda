@@ -90,6 +90,7 @@ global class PlanilhaDeTempoController {
  	*/
 	public void Del(){
 
+		System.debug('Teste123');
 		Processo__c empty = new Processo__c();
 
 		try {
